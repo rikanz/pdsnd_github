@@ -18,20 +18,20 @@ def get_filters():
     print('Hello! Let\'s explore some US bikeshare data!')
     # get user input for city (chicago, new york city, washington). HINT: Use a while loop to handle invalid inputs
     city = input('Would you like to see data for Chicago, New York City, or Washington? ').lower()
- 
+
     while not (city == 'new york city' or city == 'chicago' or city == 'washington'):
         city = input('Would you like to see data for Chicago, New York City, or Washington? ').lower()
 
     # get user input for month (all, january, february, ... , june)
     month = input('What month do you want to see data for (All, January, February, ... , June)? ').lower()
- 
+
     while not (month == 'all' or month == 'january' or month == 'february' or month == 'march' or month == 'april' or month == 'may' or month == 'june'):
         month = input('What month do you want to see data for (All, January, February, ... , June)? ').lower()
 
 
     # get user input for day of week (all, monday, tuesday, ... sunday)
     day = input('Which weekday do you want to see data for (All, Monday, Tuesday, ... ,Sunday)? ').lower()
- 
+
     while not (day == 'all' or day == 'monday' or day == 'tuesday' or day == 'wednesday' or day == 'thursday' or day == 'friday' or day == 'saturday' or day == 'sunday'):
         day = input('Which weekday do you want to see data for (All, Monday, Tuesday, ... , Sunday)? ').lower()
 
@@ -40,7 +40,7 @@ def get_filters():
 
 
 
- 
+
 def load_data(city, month, day):
     """
     Loads data for the specified city and filters by month and day if applicable.
@@ -52,10 +52,10 @@ def load_data(city, month, day):
     Returns:
         df - Pandas DataFrame containing city data filtered by month and day
     """
-    
+
     # load data file into a dataframe
     df = pd.read_csv(CITY_DATA[city])
-    
+
     # convert the Start Time column to datetime
     df['Start Time'] = pd.to_datetime(df['Start Time'])
 
@@ -63,7 +63,7 @@ def load_data(city, month, day):
     df['month'] = df['Start Time'].dt.month
     df['day_of_week'] = df['Start Time'].dt.day_name()
     df['hour'] = df['Start Time'].dt.hour
-    
+
     # combination of start station and end station trip
     df['combination_start_and_end_station'] = df['Start Station'] + ' ,' + df['End Station']
 
@@ -73,15 +73,15 @@ def load_data(city, month, day):
         # use the index of the months list to get the corresponding int
         months = ['january', 'february', 'march', 'april', 'may', 'june']
         month = months.index(month) + 1
-    
+
         # filter by month to create the new dataframe
         df = df[df['month'] == month]
 
     # filter by day of week if applicable
     if day != 'all':
         # filter by day of week to create the new dataframe
-        df = df[df['day_of_week'] == day.title()]    
-    
+        df = df[df['day_of_week'] == day.title()]
+
 
     return df
 
@@ -94,7 +94,7 @@ def time_stats(df):
 
     # display the most common month
     popular_month = df['month'].mode()[0]
-    print('Most popular month is: ' + str(popular_month))
+    print('Most popular month is {}'.format(popular_month))
 
     # display the most common day of week
     popular_weekday = df['day_of_week'].mode()[0]
@@ -163,38 +163,38 @@ def user_stats(df):
     if 'Gender' in df:
         gender = df['Gender'].value_counts()
         print('Count of gender: ' + str(gender))
-   
-     
-    
+
+
+
     # Display earliest, most recent, and most common year of birth
-    if 'Birth Year' in df:    
+    if 'Birth Year' in df:
         earliest_birth_year = df['Birth Year'].min()
         print('Earliest birth year: ' + str(earliest_birth_year))
-    
+
         most_recent_birth_year = df['Birth Year'].max()
         print('Most recent birth year: ' + str(most_recent_birth_year))
-    
+
         popular_birth_year = df['Birth Year'].value_counts().idxmax()
         print('Most popular birth year: ' + str(popular_birth_year))
-    
-    
+
+
 
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
-    
-    
+
+
 def display_data(df):
     """Asks if user wants to see data.
 
     Returns:
         5 rows of data at a time.
     """
-    
+
     view_data = input('\nWould you like to view 5 rows of individual trip data? Enter yes or no\n').lower()
-    
+
     start_loc = 0
-    
+
     while (view_data == 'yes'):
         print(df.iloc[start_loc:start_loc+5, df.columns != 'combination_start_and_end_station'])
         start_loc += 5
